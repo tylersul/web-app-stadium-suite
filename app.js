@@ -2,6 +2,7 @@ const express  = require('express'),
       app      = express(),
       path     = require('path'),
       mongoose = require('mongoose'),
+      methodOverride = require('method-override'),
       db       = mongoose.connection;
 
 const Stadium  = require('./models/stadium');
@@ -21,6 +22,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true}));
+app.use(methodOverride('_method'));
 
 // Routes
 // Root Routes
@@ -55,6 +57,17 @@ app.get('/stadiums/:id/edit', async (req, res) => {
     res.render("stadiums/edit", { stadium });
 })
 
+app.put('/stadiums/:id', async (req, res) => {
+    const { id } = req.params; //destructured
+    const stadium = await Stadium.findByIdAndUpdate(id, { ...req.body.stadium }) //spread
+    res.redirect(`/stadiums/${stadium._id}`);
+});
+
+app.delete('/stadiums/:id', async (req, res) => {
+    const { id } = req.params;
+    const stadium = await Stadium.findByIdAndDelete(id, { ...req.body.stadium});
+    res.redirect('/stadiums');
+})
 // Listener
 app.listen(3000, () => {
     console.log('Serving app on port 3000');

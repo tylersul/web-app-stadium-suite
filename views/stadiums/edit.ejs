@@ -6,7 +6,7 @@
         <title>Edit Stadium</title>
     </head>
     <body>
-        <form action="/stadiums" method="POST">
+        <form action="/stadiums/<%= stadium._id %>?_method=PUT" method="POST">
             <div>
                 <label for="name">Name</label>
                 <input type="text" id="name" name="stadium[name]" value="<%= stadium.name %>">

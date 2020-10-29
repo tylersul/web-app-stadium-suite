@@ -10,5 +10,7 @@
         <p><%= stadium.location %></p>
         <p><a href="/stadiums/<%= stadium._id %>/edit">Edit Stadium</a></p>
         <p><a href="/stadiums">Back to Home</a></p>
+        <form action="/stadiums/<%= stadium._id%>/?_method=DELETE" method="POST">
+            <button>Delete Stadium</button>
     </body>
 </html>
