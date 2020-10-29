@@ -1,16 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Stadiums</title>
-    </head>
-    <body>
-        <h1>All Stadiums</h1>
-            <ul>
-                <% for (let stadium of stadiums) { %>
-                    <li><a href="/stadiums/<%=stadium._id%>"><%= stadium.location %></a></li>
-                <% } %>
-            </ul>
-    </body>
-</html>
+<% layout('layouts/boilerplate') %>
+<h1>All Stadiums</h1>
+<div>
+    <a href="/stadiums/new">Add Stadium</a>
+</div>
+    <ul>
+        <% for (let stadium of stadiums) { %>
+            <li><a href="/stadiums/<%=stadium._id%>"><%= stadium.location %></a></li>
+        <% } %>
+    </ul>

@@ -1,9 +1,10 @@
-const express  = require('express'),
-      app      = express(),
-      path     = require('path'),
-      mongoose = require('mongoose'),
+const express        = require('express'),
+      app            = express(),
+      path           = require('path'),
+      mongoose       = require('mongoose'),
       methodOverride = require('method-override'),
-      db       = mongoose.connection;
+      ejsMate        = require('ejs-mate'),
+      db             = mongoose.connection;
 
 const Stadium  = require('./models/stadium');
 
@@ -18,6 +19,7 @@ db.once("open", () => {
     console.log("Database connected");
 });
 
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
