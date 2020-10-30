@@ -1,17 +1,36 @@
 <% layout('layouts/boilerplate') %>
-<form action="/stadiums/<%= stadium._id %>?_method=PUT" method="POST">
-    <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="stadium[name]" value="<%= stadium.name %>">
+<div class="row">
+    <h1 class="text-center">New Stadium</h1>
+    <div class="col-6 offset-3">
+        <form action="/stadiums/<%= stadium._id %>?_method=PUT" method="POST">
+            <div class="mb-3">
+                <label class="form-label" for="name">Name</label>
+                <input class="form-control" type="text" id="name" name="stadium[name]" value="<%= stadium.name %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="location">Location</label>
+                <input class="form-control" type="text" id="location" name="stadium[location]" value="<%= stadium.location %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="image">Image</label>
+                <input class="form-control" type="text" id="image" name="stadium[image]" value="<%= stadium.image %>">
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="description">Description</label>
+                <textarea class="form-control" type="text" id="description" name="stadium[description]"><%= stadium.description %></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="avgPrice">Average Ticket Price</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="price-label">$</span>
+                    <input type="text" class="form-control" placeholder="0.00" id="price" aria-label="avgPrice" aria-describedby="price-label" name="stadium[avgPrice]" value="<%= stadium.price %>">
+                </div>
+            </div>
+            <div class="mb-3">
+                <button class="btn btn-success">Update Stadium</button>
+                
+            </div>
+        </form>
+        <a href="/stadiums/<%= stadium._id %>">Back to Stadium</a>
     </div>
-    <div>
-        <label for="location">Location</label>
-        <input type="text" id="location" name="stadium[location]" value="<%= stadium.location %>">
-    </div>
-    <div>
-        <label for="Image">Image</label>
-        <input type="text" id="image" name="stadium[image]" value="<%= stadium.image %>">
-    </div>
-    <button>Update Stadium</button>
-</form>
-<a href="/stadiums/<%= stadium._id %>">Back to Stadium</a>
+</div>

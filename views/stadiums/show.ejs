@@ -1,9 +1,22 @@
 <% layout('layouts/boilerplate') %>
-<h1>Show Stadiums</h1>
-<h2><%= stadium.location %></h2>
-<img src="<%= stadium.image %>">
-<p><a href="/stadiums/<%= stadium._id %>/edit">Edit Stadium</a></p>
-<p><a href="/stadiums">Back to Home</a></p>
-<form action="/stadiums/<%= stadium._id%>/?_method=DELETE" method="POST">
-    <button>Delete Stadium</button>
-</form>
+<div class="row">
+    <div class="col-6 offset-3">
+        <div class="card mb-3" style="width: 18rem;">
+            <img src="<%= stadium.image %>" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title"><%= stadium.name %></h5>
+                <p class="card-text"><%= stadium.description %></p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted"><%= stadium.location %></li>
+                <li class="list-group-item"><%= stadium.avgPrice %></li>
+            </ul>
+            <div class="card-body">
+                <a href="/stadiums/<%=stadium._id %>/edit" class="card-link btn btn-warning">Edit</a>
+                <form class="d-inline" action="/stadiums/<%= stadium._id%>/?_method=DELETE" method="POST">
+                    <button class="btn btn-danger" >Delete Stadium</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
