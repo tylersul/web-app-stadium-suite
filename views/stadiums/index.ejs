@@ -5,6 +5,22 @@
 </div>
     <ul>
         <% for (let stadium of stadiums) { %>
-            <li><a href="/stadiums/<%=stadium._id%>"><%= stadium.location %></a></li>
+            <div class="card">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img src="<%= stadium.image %>" alt="" class="img-fluid">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= stadium.name %></h5>
+                            <p class="card-text"><%= stadium.description %></p>
+                            <p class="card-text">
+                                <small class="text-muted"><%= stadium.location %></small>
+                            </p>
+                            <a href="/stadiums/<%=stadium._id%>" class="btn btn-primary"> View </a>
+                        </div>
+                    </div>
+                </div>
+            </div>>
         <% } %>
     </ul>
