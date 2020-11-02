@@ -2,11 +2,14 @@ const express        = require('express'),
       app            = express(),
       path           = require('path'),
       mongoose       = require('mongoose'),
+      catchAsync     = require('./utils/catchAsync'),
+      ExpressError   = require('./utils/expressError'),
       methodOverride = require('method-override'),
       ejsMate        = require('ejs-mate'),
       db             = mongoose.connection;
 
 const Stadium  = require('./models/stadium');
+
 
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
     useNewUrlParser: true,
@@ -43,33 +46,47 @@ app.get('/stadiums/new', (req, res) => {
     res.render('stadiums/new');
 });
 
-app.post('/stadiums', async (req, res) => {
+app.post('/stadiums', catchAsync(async (req, res) => {
+    if(!req.body.stadium) throw new ExpressError('Invalid Stadium Data', 400);
     const stadium = new Stadium(req.body.stadium);
     await stadium.save();
     res.redirect(`/stadiums/${stadium._id}`);
-})
+}));
 
-app.get("/stadiums/:id", async (req, res) => {
+app.get("/stadiums/:id", catchAsync(async (req, res) => {
     const stadium = await Stadium.findById(req.params.id);
     res.render("stadiums/show", { stadium });
-});
+}));
 
-app.get('/stadiums/:id/edit', async (req, res) => {
+app.get('/stadiums/:id/edit', catchAsync(async (req, res) => {
     const stadium = await Stadium.findById(req.params.id);
     res.render("stadiums/edit", { stadium });
-})
+}));
 
-app.put('/stadiums/:id', async (req, res) => {
+app.put('/stadiums/:id', catchAsync(async (req, res) => {
     const { id } = req.params; //destructured
     const stadium = await Stadium.findByIdAndUpdate(id, { ...req.body.stadium }) //spread
     res.redirect(`/stadiums/${stadium._id}`);
-});
+}));
 
-app.delete('/stadiums/:id', async (req, res) => {
+app.delete('/stadiums/:id', catchAsync(async (req, res) => {
     const { id } = req.params;
     const stadium = await Stadium.findByIdAndDelete(id, { ...req.body.stadium});
     res.redirect('/stadiums');
-})
+}));
+
+// 404
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404));
+});
+
+// Error Handler
+app.use((err, req, res, next) => {
+    const { statusCode = 500, message = 'Something went wrong.' } = err;
+    if (!err.message) err.message = 'Oh no, something went wrong!';
+    res.status(statusCode).render('errors', { err });
+});
+
 // Listener
 app.listen(3000, () => {
     console.log('Serving app on port 3000');
