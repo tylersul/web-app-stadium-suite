@@ -2,28 +2,33 @@
 <div class="row">
     <h1 class="text-center">New Stadium</h1>
     <div class="col-6 offset-3">
-        <form action="/stadiums/<%= stadium._id %>?_method=PUT" method="POST">
+        <form action="/stadiums/<%= stadium._id %>?_method=PUT" method="POST" class="validated-form" novalidate>
             <div class="mb-3">
                 <label class="form-label" for="name">Name</label>
-                <input class="form-control" type="text" id="name" name="stadium[name]" value="<%= stadium.name %>">
+                <input class="form-control" type="text" id="name" name="stadium[name]" value="<%= stadium.name %>" required>
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="location">Location</label>
-                <input class="form-control" type="text" id="location" name="stadium[location]" value="<%= stadium.location %>">
+                <input class="form-control" type="text" id="location" name="stadium[location]" value="<%= stadium.location %>" required>
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="image">Image</label>
-                <input class="form-control" type="text" id="image" name="stadium[image]" value="<%= stadium.image %>">
+                <input class="form-control" type="text" id="image" name="stadium[image]" value="<%= stadium.image %>" required>
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="description">Description</label>
-                <textarea class="form-control" type="text" id="description" name="stadium[description]"><%= stadium.description %></textarea>
+                <textarea class="form-control" type="text" id="description" name="stadium[description]" required><%= stadium.description %></textarea>
+                <div class="valid-feedback">Looks good!</div>
             </div>
             <div class="mb-3">
                 <label class="form-label" for="avgPrice">Average Ticket Price</label>
                 <div class="input-group">
                     <span class="input-group-text" id="price-label">$</span>
-                    <input type="text" class="form-control" placeholder="0.00" id="price" aria-label="avgPrice" aria-describedby="price-label" name="stadium[avgPrice]" value="<%= stadium.price %>">
+                    <input type="text" class="form-control" placeholder="0.00" id="price" aria-label="avgPrice" aria-describedby="price-label" name="stadium[avgPrice]" value="<%= stadium.price %>" required>
+                    <div class="valid-feedback">Looks good!</div>
                 </div>
             </div>
             <div class="mb-3">
