@@ -2,12 +2,14 @@ const express        = require('express'),
       app            = express(),
       path           = require('path'),
       mongoose       = require('mongoose'),
+      { stadiumJoiSchema } = require('./schemas.js'),
       catchAsync     = require('./utils/catchAsync'),
       ExpressError   = require('./utils/expressError'),
       methodOverride = require('method-override'),
       ejsMate        = require('ejs-mate'),
       db             = mongoose.connection;
 
+const Joi = require('joi');
 const Stadium  = require('./models/stadium');
 
 
@@ -29,6 +31,18 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 
+const validateStadium = (req, res, next) => {
+    
+    const { error } = stadiumJoiSchema.validate(req.body);
+
+    if(error) {
+        //details is array of objects
+        const message = error.details.map(el => el.message).join(',');
+        throw new ExpressError(message, 400);
+    } else {
+        next();
+    }
+}
 // Routes
 // Root Routes
 app.get('/', (req, res) => {
@@ -46,8 +60,8 @@ app.get('/stadiums/new', (req, res) => {
     res.render('stadiums/new');
 });
 
-app.post('/stadiums', catchAsync(async (req, res) => {
-    if(!req.body.stadium) throw new ExpressError('Invalid Stadium Data', 400);
+app.post('/stadiums', validateStadium, catchAsync(async (req, res) => {
+    // if(!req.body.stadium) throw new ExpressError('Invalid Stadium Data', 400);
     const stadium = new Stadium(req.body.stadium);
     await stadium.save();
     res.redirect(`/stadiums/${stadium._id}`);
@@ -63,7 +77,7 @@ app.get('/stadiums/:id/edit', catchAsync(async (req, res) => {
     res.render("stadiums/edit", { stadium });
 }));
 
-app.put('/stadiums/:id', catchAsync(async (req, res) => {
+app.put('/stadiums/:id', validateStadium, catchAsync(async (req, res) => {
     const { id } = req.params; //destructured
     const stadium = await Stadium.findByIdAndUpdate(id, { ...req.body.stadium }) //spread
     res.redirect(`/stadiums/${stadium._id}`);
