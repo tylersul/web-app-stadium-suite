@@ -10,7 +10,8 @@ const express        = require('express'),
       db             = mongoose.connection;
 
 const Joi = require('joi');
-const Stadium  = require('./models/stadium');
+const Stadium  = require('./models/stadium'),
+      Review   = require('./models/review');
 
 
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
@@ -89,6 +90,14 @@ app.delete('/stadiums/:id', catchAsync(async (req, res) => {
     res.redirect('/stadiums');
 }));
 
+app.post('/stadiums/:id/reviews', catchAsync(async (req, res) => {
+    const stadium = await Stadium.findById(req.params.id);
+    const review = new Review(req.body.review);
+    stadium.reviews.push(review);
+    await review.save();
+    await stadium.save();
+    res.redirect(`/stadiums/${stadium._id}`);
+}))
 // 404
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));

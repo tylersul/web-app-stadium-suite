@@ -6,7 +6,13 @@ const StadiumSchema = new Schema({
     avgPrice: Number,
     description: String,
     location: String,
-    image: String
+    image: String,
+    reviews: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Reviews'
+        }
+    ]
 });
 
 module.exports = mongoose.model('Stadium', StadiumSchema);
