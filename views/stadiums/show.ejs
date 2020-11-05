@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
 <div class="row">
-    <div class="col-6 offset-3">
+    <div class="col-6">
         <div class="card mb-3" style="width: 18rem;">
             <img src="<%= stadium.image %>" class="card-img-top" alt="...">
             <div class="card-body">
@@ -18,6 +18,8 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div class="col-6">
         <h2>Leave a Review</h2>
         <form action="/stadiums/<%= stadium._id %>/reviews" method="POST" class="mb-3 validated-form" novalidate>
             <div class="mb-3">
@@ -31,5 +33,13 @@
             </div>
             <button class="btn btn-success">Submit</button>
         </form>
+        <% stadium.reviews.forEach(function(review) { %>
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title"><%= review.rating %></h5>
+                <p class="card-text"><%= review.body %></p>
+            </div>
+        </div>
+        <% }); %>
     </div>
 </div>
