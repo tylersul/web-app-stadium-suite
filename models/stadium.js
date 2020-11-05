@@ -1,5 +1,6 @@
 const mongoose = require('mongoose'),
       Schema   = mongoose.Schema;
+      Review   = require('./review');
 
 const StadiumSchema = new Schema({
     name: String,
@@ -10,7 +11,7 @@ const StadiumSchema = new Schema({
     reviews: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Reviews'
+            ref: 'Review'
         }
     ]
 });

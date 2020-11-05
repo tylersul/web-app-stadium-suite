@@ -83,7 +83,7 @@ app.post('/stadiums', validateStadium, catchAsync(async (req, res) => {
 }));
 
 app.get("/stadiums/:id", catchAsync(async (req, res) => {
-    const stadium = await Stadium.findById(req.params.id);
+    const stadium = await Stadium.findById(req.params.id).populate('reviews');
     res.render("stadiums/show", { stadium });
 }));
 
