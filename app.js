@@ -2,7 +2,7 @@ const express        = require('express'),
       app            = express(),
       path           = require('path'),
       mongoose       = require('mongoose'),
-      { stadiumJoiSchema } = require('./schemas.js'),
+      { stadiumJoiSchema, reviewJoiSchema } = require('./schemas.js'),
       catchAsync     = require('./utils/catchAsync'),
       ExpressError   = require('./utils/expressError'),
       methodOverride = require('method-override'),
@@ -44,6 +44,20 @@ const validateStadium = (req, res, next) => {
         next();
     }
 }
+
+const validateReview = (req, res, next) => {
+    
+    const { error } = reviewJoiSchema.validate(req.body);
+
+    if(error) {
+        //details is array of objects
+        const message = error.details.map(el => el.message).join(',');
+        throw new ExpressError(message, 400);
+    } else {
+        next();
+    }
+}
+
 // Routes
 // Root Routes
 app.get('/', (req, res) => {
@@ -90,14 +104,15 @@ app.delete('/stadiums/:id', catchAsync(async (req, res) => {
     res.redirect('/stadiums');
 }));
 
-app.post('/stadiums/:id/reviews', catchAsync(async (req, res) => {
+app.post('/stadiums/:id/reviews', validateReview, catchAsync(async (req, res) => {
     const stadium = await Stadium.findById(req.params.id);
     const review = new Review(req.body.review);
     stadium.reviews.push(review);
     await review.save();
     await stadium.save();
     res.redirect(`/stadiums/${stadium._id}`);
-}))
+}));
+
 // 404
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
