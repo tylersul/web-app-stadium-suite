@@ -113,6 +113,13 @@ app.post('/stadiums/:id/reviews', validateReview, catchAsync(async (req, res) =>
     res.redirect(`/stadiums/${stadium._id}`);
 }));
 
+app.delete('/stadiums/:id/reviews/:reviewId', catchAsync(async (req, res) => {
+    const { id, reviewId } = req.params;
+    await Stadium.findByIdAndUpdate(id, { $pull: { review: reviewId } });
+    await Review.findByIdAndDelete(req.params.reviewId);
+    res.redirect(`/stadiums/${id}`);
+}))
+
 // 404
 app.all('*', (req, res, next) => {
     next(new ExpressError('Page Not Found', 404));
