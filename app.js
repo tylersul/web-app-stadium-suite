@@ -14,6 +14,7 @@ const Stadium  = require('./models/stadium'),
       Review   = require('./models/review');
 
 const stadiumRoutes = require('./routes/stadiumRoutes');
+const reviewRoutes  = require('./routes/reviewRoutes');
 
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
     useNewUrlParser: true,
@@ -35,42 +36,14 @@ app.use(methodOverride('_method'));
 
 
 
-const validateReview = (req, res, next) => {
-    
-    const { error } = reviewJoiSchema.validate(req.body);
-
-    if(error) {
-        //details is array of objects
-        const message = error.details.map(el => el.message).join(',');
-        throw new ExpressError(message, 400);
-    } else {
-        next();
-    }
-}
-
 app.use('/stadiums', stadiumRoutes);
+app.use('/stadiums/:id/reviews', reviewRoutes);
 
 // Routes
 // Root Routes
 app.get('/', (req, res) => {
     res.render('home');
 });
-
-app.post('/stadiums/:id/reviews', validateReview, catchAsync(async (req, res) => {
-    const stadium = await Stadium.findById(req.params.id);
-    const review = new Review(req.body.review);
-    stadium.reviews.push(review);
-    await review.save();
-    await stadium.save();
-    res.redirect(`/stadiums/${stadium._id}`);
-}));
-
-app.delete('/stadiums/:id/reviews/:reviewId', catchAsync(async (req, res) => {
-    const { id, reviewId } = req.params;
-    await Stadium.findByIdAndUpdate(id, { $pull: { review: reviewId } });
-    await Review.findByIdAndDelete(req.params.reviewId);
-    res.redirect(`/stadiums/${id}`);
-}))
 
 // 404
 app.all('*', (req, res, next) => {

@@ -2,9 +2,11 @@ const express              = require('express'),
       router               = express.Router(),
       catchAsync           = require('../utils/catchAsync'),
       ExpressError         = require('../utils/expressError'),
-      { stadiumJoiSchema } = require('../schemas.js')
+      { stadiumJoiSchema } = require('../schemas.js');
 
 const Stadium  = require('../models/stadium');
+const Review   = require('../models/review');
+
 
 const validateStadium = (req, res, next) => {
     
