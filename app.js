@@ -6,6 +6,8 @@ const express        = require('express'),
       catchAsync     = require('./utils/catchAsync'),
       ExpressError   = require('./utils/expressError'),
       methodOverride = require('method-override'),
+      session        = require('express-session'),
+      flash          = require('connect-flash'),
       ejsMate        = require('ejs-mate'),
       db             = mongoose.connection;
 
@@ -19,7 +21,8 @@ const reviewRoutes  = require('./routes/reviewRoutes');
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
     useNewUrlParser: true,
     useCreateIndex: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 });
 
 db.on("error", console.error.bind(console, "connection error:"));
@@ -33,8 +36,27 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'public')));
 
+const sessionConfig = {
+    secret: 'notsosecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        httpOnly: true,                                     // XSS prevention
+        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,      // 1 week
+        maxAge: 1000 * 60 * 60 * 24 * 7
+    }
+}
 
+app.use(session(sessionConfig));
+app.use(flash());
+
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success');
+    res.locals.error = req.flash('error');
+    next();
+});
 
 app.use('/stadiums', stadiumRoutes);
 app.use('/stadiums/:id/reviews', reviewRoutes);
