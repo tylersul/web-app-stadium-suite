@@ -19,6 +19,7 @@ const Stadium  = require('./models/stadium'),
 const User = require('./models/user');
 const stadiumRoutes = require('./routes/stadiumRoutes');
 const reviewRoutes  = require('./routes/reviewRoutes');
+const userRoutes    = require('./routes/userRoutes');
 
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
     useNewUrlParser: true,
