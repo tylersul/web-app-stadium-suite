@@ -8,13 +8,15 @@ const express        = require('express'),
       methodOverride = require('method-override'),
       session        = require('express-session'),
       flash          = require('connect-flash'),
+      passport       = require('passport'),
+      localStrategy  = require('passport-local'),
       ejsMate        = require('ejs-mate'),
       db             = mongoose.connection;
 
 const Joi = require('joi');
 const Stadium  = require('./models/stadium'),
       Review   = require('./models/review');
-
+const User = require('./models/user');
 const stadiumRoutes = require('./routes/stadiumRoutes');
 const reviewRoutes  = require('./routes/reviewRoutes');
 
@@ -57,6 +59,12 @@ app.use((req, res, next) => {
     res.locals.error = req.flash('error');
     next();
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.use('/stadiums', stadiumRoutes);
 app.use('/stadiums/:id/reviews', reviewRoutes);
