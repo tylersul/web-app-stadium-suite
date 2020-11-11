@@ -69,6 +69,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/stadiums', stadiumRoutes);
 app.use('/stadiums/:id/reviews', reviewRoutes);
+app.use('/', userRoutes);
 
 // Routes
 // Root Routes
