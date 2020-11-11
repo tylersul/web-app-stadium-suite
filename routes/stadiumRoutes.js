@@ -2,7 +2,8 @@ const express              = require('express'),
       router               = express.Router(),
       catchAsync           = require('../utils/catchAsync'),
       ExpressError         = require('../utils/expressError'),
-      { stadiumJoiSchema } = require('../schemas.js');
+      { stadiumJoiSchema } = require('../schemas.js'),
+      { isLoggedIn }       = require('../middleware');
 
 const Stadium  = require('../models/stadium');
 const Review   = require('../models/review');
@@ -28,7 +29,7 @@ router.get('/', async (req, res) => {
 });
 
 // Create New Stadium Routes
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedIn, (req, res) => {
     res.render('stadiums/new');
 });
 
@@ -49,7 +50,7 @@ router.get("/:id", catchAsync(async (req, res) => {
     res.render("stadiums/show", { stadium });
 }));
 
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     const stadium = await Stadium.findById(req.params.id);
     if (!stadium) {
         req.flash('error', 'Stadium not found');
@@ -58,7 +59,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
     res.render("stadiums/edit", { stadium });
 }));
 
-router.put('/:id', validateStadium, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, validateStadium, catchAsync(async (req, res) => {
     const { id } = req.params; //destructured
     const stadium = await Stadium.findByIdAndUpdate(id, { ...req.body.stadium }) //spread
     req.flash('success', 'Successfully updated stadium');
