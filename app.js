@@ -2,8 +2,6 @@ const express        = require('express'),
       app            = express(),
       path           = require('path'),
       mongoose       = require('mongoose'),
-      { stadiumJoiSchema, reviewJoiSchema } = require('./schemas.js'),
-      catchAsync     = require('./utils/catchAsync'),
       ExpressError   = require('./utils/expressError'),
       methodOverride = require('method-override'),
       session        = require('express-session'),
@@ -13,14 +11,15 @@ const express        = require('express'),
       ejsMate        = require('ejs-mate'),
       db             = mongoose.connection;
 
-const Joi = require('joi');
-const Stadium  = require('./models/stadium'),
-      Review   = require('./models/review');
+
 const User = require('./models/user');
+
+// Route Imports
 const stadiumRoutes = require('./routes/stadiumRoutes');
 const reviewRoutes  = require('./routes/reviewRoutes');
 const userRoutes    = require('./routes/userRoutes');
 
+// Mongo Connection
 mongoose.connect('mongodb://localhost:27017/stadium-suite', {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -33,14 +32,18 @@ db.once("open", () => {
     console.log("Database connected");
 });
 
+// EJS Templating
 app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
+
+// Views Directory
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.urlencoded({ extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Session Configuration
 const sessionConfig = {
     secret: 'notsosecret',
     resave: false,
