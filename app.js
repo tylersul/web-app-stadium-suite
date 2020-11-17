@@ -56,16 +56,19 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig));
+
+// Flash 
 app.use(flash());
 
 
-
+// Pasport auth setup
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Set Locals for all routes
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
@@ -73,6 +76,7 @@ app.use((req, res, next) => {
     next();
 });
 
+// Route Imports
 app.use('/stadiums', stadiumRoutes);
 app.use('/stadiums/:id/reviews', reviewRoutes);
 app.use('/', userRoutes);
