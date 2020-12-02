@@ -9,14 +9,17 @@
             </div>
             <ul class="list-group list-group-flush">
                 <li class="list-group-item text-muted"><%= stadium.location %></li>
+                <li class="list-group-item">Submitted By: <%= stadium.author.username %></li>
                 <li class="list-group-item"><%= stadium.avgPrice %></li>
             </ul>
+            <% if (currentUser && stadium.author.equals(currentUser._id)) { %>
             <div class="card-body">
                 <a href="/stadiums/<%=stadium._id %>/edit" class="card-link btn btn-warning">Edit</a>
                 <form class="d-inline" action="/stadiums/<%= stadium._id%>/?_method=DELETE" method="POST">
                     <button class="btn btn-danger" >Delete Stadium</button>
                 </form>
             </div>
+            <% } %>
         </div>
     </div>
     <div class="col-6">

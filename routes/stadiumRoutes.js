@@ -36,13 +36,14 @@ router.get('/new', isLoggedIn, (req, res) => {
 router.post('/', validateStadium, catchAsync(async (req, res) => {
     // if(!req.body.stadium) throw new ExpressError('Invalid Stadium Data', 400);
     const stadium = new Stadium(req.body.stadium);
+    stadium.author = req.user._id;
     await stadium.save();
     req.flash('success', 'Successfully added a new stadium!');
     res.redirect(`/stadiums/${stadium._id}`);
 }));
 
 router.get("/:id", catchAsync(async (req, res) => {
-    const stadium = await Stadium.findById(req.params.id).populate('reviews');
+    const stadium = await (await Stadium.findById(req.params.id).populate('reviews').populate('author'));
     if (!stadium) {
         req.flash('error', 'Stadium not found');
         return res.redirect('/stadiums');
