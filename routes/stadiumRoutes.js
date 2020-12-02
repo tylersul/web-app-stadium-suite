@@ -1,26 +1,10 @@
 const express              = require('express'),
       router               = express.Router(),
       catchAsync           = require('../utils/catchAsync'),
-      ExpressError         = require('../utils/expressError'),
-      { stadiumJoiSchema } = require('../schemas.js'),
-      { isLoggedIn }       = require('../middleware');
+      { isLoggedIn, isAuthor, validateStadium }       = require('../middleware');
 
 const Stadium  = require('../models/stadium');
 const Review   = require('../models/review');
-
-
-const validateStadium = (req, res, next) => {
-    
-    const { error } = stadiumJoiSchema.validate(req.body);
-
-    if (error) {
-        //details is array of objects
-        const message = error.details.map(el => el.message).join(',');
-        throw new ExpressError(message, 400);
-    } else {
-        next();
-    }
-}
 
 // Stadium Routes
 router.get('/', async (req, res) => {
@@ -51,7 +35,7 @@ router.get("/:id", catchAsync(async (req, res) => {
     res.render("stadiums/show", { stadium });
 }));
 
-router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const stadium = await Stadium.findById(req.params.id);
     if (!stadium) {
         req.flash('error', 'Stadium not found');
@@ -60,14 +44,14 @@ router.get('/:id/edit', isLoggedIn, catchAsync(async (req, res) => {
     res.render("stadiums/edit", { stadium });
 }));
 
-router.put('/:id', isLoggedIn, validateStadium, catchAsync(async (req, res) => {
+router.put('/:id', isLoggedIn, isAuthor, validateStadium, catchAsync(async (req, res) => {
     const { id } = req.params; //destructured
     const stadium = await Stadium.findByIdAndUpdate(id, { ...req.body.stadium }) //spread
     req.flash('success', 'Successfully updated stadium');
     res.redirect(`/stadiums/${stadium._id}`);
 }));
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedIn, isAuthor, catchAsync(async (req, res) => {
     const { id } = req.params;
     const stadium = await Stadium.findByIdAndDelete(id, { ...req.body.stadium});
     req.flash('success', 'Successfully deleted stadium');
