@@ -27,7 +27,7 @@ router.post('/', validateStadium, catchAsync(async (req, res) => {
 }));
 
 router.get("/:id", catchAsync(async (req, res) => {
-    const stadium = await (await Stadium.findById(req.params.id).populate('reviews').populate('author'));
+    const stadium = await (await Stadium.findById(req.params.id).populate({path: 'reviews', populate: { path: 'author'}}).populate('author'));
     if (!stadium) {
         req.flash('error', 'Stadium not found');
         return res.redirect('/stadiums');
