@@ -2,6 +2,7 @@ const ExpressError         = require('./utils/expressError'),
       { stadiumJoiSchema, reviewJoiSchema } = require('./schemas.js');
 
 const Stadium  = require('./models/stadium');
+const Review  = require('./models/review');
 
 
 module.exports.isLoggedIn = (req, res, next) => {
@@ -30,6 +31,16 @@ module.exports.isAuthor = async(req, res, next) => {
     const { id } = req.params;
     const stadium = await Stadium.findById(id);
     if (!stadium.author.equals(req.user._id)) {
+        req.flash('error', 'You do not have permission to do that.');
+        return res.redirect(`/stadiums/${id}`);
+    }
+    next();
+}
+
+module.exports.isReviewAuthor = async(req, res, next) => {
+    const { id, reviewId } = req.params;
+    const stadium = await Review.findById(reviewId);
+    if (!review.author.equals(req.user._id)) {
         req.flash('error', 'You do not have permission to do that.');
         return res.redirect(`/stadiums/${id}`);
     }
