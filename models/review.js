@@ -5,7 +5,11 @@ const Schema   = mongoose.Schema;
 // Schema definition
 const ReviewSchema = new Schema({
     body: String,
-    rating: Number
+    rating: Number,
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
 });
 
 // Model Export
