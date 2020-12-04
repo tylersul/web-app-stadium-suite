@@ -1,46 +1,25 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/user');
+const users = require('../controllers/users');
 const catchAsync = require('../utils/catchAsync');
 const passport = require('passport');
 
-router.get('/register', (req, res) => {
-    res.render('users/register');
-});
+/*** User Routes ***/
+// Register User - GET
+router.get('/register', users.renderRegisterForm);
 
-router.post('/register', catchAsync(async (req, res) => {
-    try {
-        const { email, username, password } = req.body;
-        const user = new User({ email, username });
-        const registeredUser = await User.register(user, password);
-        req.login(registeredUser, err => {
-            if (err) {
-                return next(err);
-            }
-            req.flash('Welcome to StadiumSuite');
-            res.redirect('/stadiums');
-        });
-    } catch (e) {
-        req.flash('error', e.message);
-        console.log(e);
-        res.redirect('register');
-    }
-}));
+// Register User - POST
+router.post('/register', catchAsync(users.createUser));
 
-router.get('/login', (req, res) => {
-    res.render('users/login');
-});
+// Login User - GET
+router.get('/login', users.renderLoginForm);
 
-router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), (req, res) => {
-    req.flash('success', 'Welcome back!');
-    const redirectUrl = req.session.returnTo || '/stadiums';
-    res.redirect(redirectUrl);
-});
+// Login User - POST
+router.post('/login', passport.authenticate('local', {failureFlash: true, failureRedirect: '/login'}), users.login);
 
-router.get('/logout', (req, res) => {
-    req.logout();
-    req.flash('success', 'Successfully logged out.')
-    res.redirect('/stadiums')
-});
+// Logout User - GET
+router.get('/logout', users.logout);
 
+// Export Routes
 module.exports = router;
